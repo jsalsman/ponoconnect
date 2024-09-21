@@ -20,3 +20,5 @@ Detect emotion: On
 by Jim Salsman, September 20, 2024, for the [Honolulu Tech Week Community Hackathon](https://www.honolulutechweek.com/hackathon)
 
 License: MIT
+
+![unhoused trends](trends.png)
