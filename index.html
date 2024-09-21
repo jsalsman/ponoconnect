@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>24/7 voice help for the homeless on Oahu</title>
+
+    <meta itemprop="name" content="ponoconnect">
+    <meta name="description" content="24/7 telephone and web audio help for the homeless on Oahu">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Jim Salsman">
+    <meta name="language" content="English">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="https://vapi.ai/favicon.ico" />
+
+    <!-- Preview card: -->
+    <meta property="og:title" content="ponoconnect">
+    <meta property="og:image" content="screenshot.png" />
+    <meta property="og:description" content="24/7 telephone and web audio help for the homeless on Oahu">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jsalsman.github.io/ponoconnect">
+    <meta property="og:site_name" content="GitHub" />
+    <meta property="og:locale" content="en_US" />
+
+    <style>
+      /* General styling for the entire body of the webpage */
+      body {
+        margin: 0; /* Removes margin space around everything */
+        font-family: Arial, sans-serif; /* Sets font to Arial */
+      }
+      a, a:visited { /* Links in their normal and visited states */
+        text-decoration: none; /* Removes underlines from links */
+        color: blue; /* Links always blue */
+      }
+      h1, h2 { /* H1 and H2 headings */
+        font-family: Georgia, serif; /* Sets font to Georgia */
+        margin-top: 0px; /* Adjusts the top margin */
+      }
+      #menu { /* Menu container */
+        background-color: lightgreen; /* Light green menu background */
+        padding: 1em; /* Adds padding around the inside of menu */
+        overflow-y: auto; /* Allows scrolling menu is too tall */
+      }
+      #content { /* Main content container */
+        overflow-y: auto; /* Allows vertical scrolling */
+        background-attachment: fixed; /* Image won't move */
+      }
+      section { /* Individual sections */
+        padding: 1em; /* Pads each section to replace margins */
+      }
+
+      /* Desktop or landscape view: 700px or more */
+      @media (min-width: 700px) {
+        body {
+          display: flex; /* Flex layout puts menu and content side by side */
+          height: 100vh; /* Prevents menu from scrolling away */
+        }
+        #menu {
+          width: 30vw; /* Menu is 30% of viewport width */
+        }
+        #content {
+          width: 70vw; /* Content is 70% of viewport width */
+        }
+      }
+
+      /* Mobile/portrait view: 699px or less */
+      @media (max-width: 699px) {
+        #menu {
+          height: 20vh; /* Menu is 20% of the viewport height */
+          bottom: 0; /* Positions menu at bottom of viewport */
+          position: fixed; /* Menu stays in position on scroll */
+          display: flex;
+          flex-direction: column;
+        }
+        #greeting, #about, #trailer {
+          margin: 1px;
+        }
+        #trailer {
+          display: flex;
+          justify-content: space-between;
+          align-items: top;
+        }
+        #instructions {
+          width: 40%; /* Adjust width to fit within the flex container */
+        }
+        #about {
+          width: 40%; /* Adjust width to fit within the flex container */
+          text-align: right; /* Align text to the right */
+        }
+        #content {
+          height: 80vh; /* Content is 80% of viewport height */
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="menu">
+      <h2 id="greeting">24/7 voice help for the homeless on Oahu;
+        also available at <a href="tel:808-515-6625">(808) 515-6625</a></h2>
+      <div id="trailer">
+        <h3 id="instructions">Click the 📞 button to begin.</h3>
+        <p id="about">
+          See <a href="https://github.com/jsalsman/ponoconnect/"
+            target="_blank">the GitHub repository</a>
+          for details, prompt, and <a href="https://vapi.ai/">Vapi.ai</a>
+          replication details.
+        </p>
+      </div>
+    </div>
+
+    <div id="content">
+      <section id="transcript">
+        Conversation:
+        <div id="conversation"></div>
+        <hr/>
+      </section>
+      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><!-- space for horizontal scrolling -->
+    </div>
+
+    <script>
+      const assistant = "10dfbbc9-5aef-41a2-ba43-4e62980412a6"; // assistant ID
+      const apiKey = "4922b20f-1964-400c-ac08-21b6889bf23d"; // Public key from Vapi Dashboard
+      const buttonConfig = { }; // see https://docs.vapi.ai/examples/voice-widget
+
+      var vapiInstance = null;
+      (function (d, t) {
+        var g = document.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+        g.src =
+          "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        g.defer = true;
+        g.async = true;
+        s.parentNode.insertBefore(g, s);
+
+        g.onload = function () {
+          vapiInstance = window.vapiSDK.run({
+            apiKey: apiKey, // mandatory
+            assistant: assistant, // mandatory
+            config: buttonConfig, // optional
+          });
+
+          function log_message(message) {
+            var timestamp = new Date().toLocaleString();
+            var timestampElement = document.createElement('p');
+            timestampElement.textContent = `[${timestamp}]`;
+
+            // Check if the message is an object and has a "type" property
+            if (typeof message === 'object' && message.type === 'conversation-update') {
+                // Find the conversation div
+                var conversationDiv = document.getElementById('conversation');
+
+                // Clear the conversation div
+                conversationDiv.innerHTML = '';
+
+                // Add the timestamp
+                conversationDiv.appendChild(timestampElement);
+
+                // Loop through the conversation array
+                message.conversation.forEach(entry => {
+                    var p = document.createElement('p');
+                    p.textContent = entry.content;
+
+                    // Apply different styles based on the role
+                    if (entry.role === 'user') {
+                        p.style.fontFamily = 'serif';
+                    } else if (entry.role === 'assistant') {
+                        p.style.fontFamily = 'sans-serif';
+                    }
+
+                    // Append the paragraph to the conversation div
+                    conversationDiv.appendChild(p);
+                });
+            } else {
+                // Create a <pre> element for normal log messages
+                var pre = document.createElement('pre');
+
+                // Check if the message is an object
+                if (typeof message === 'object') {
+                    // Convert the object to a string representation
+                    message = JSON.stringify(message, null, 2);
+                }
+
+                // Set the message with the timestamp as the text content of the <pre> element
+                pre.textContent = `[${timestamp}] ${message}`;
+
+                // Apply the desired font size and family
+                pre.style.fontSize = '11pt';
+                pre.style.fontFamily = 'sans-serif';
+
+                // Append the <pre> element to the conversation
+                var transcriptDiv = document.getElementById('transcript');
+                transcriptDiv.appendChild(pre);
+            }
+          }
+
+          // Function calls and transcripts will be sent via messages
+          vapiInstance.on('message', (message) => {
+            log_message(message);
+          });
+
+          vapiInstance.on('error', (e) => {
+            console.error(e)
+            log_message(e);
+          });
+        };
+
+      })(document, "script");
+
+    </script>
+  </body>
+</html>
