@@ -21,4 +21,4 @@ by Jim Salsman, September 20, 2024, for the [Honolulu Tech Week Community Hackat
 
 License: MIT
 
-<a href="https://acrobat.adobe.com/id/urn:aaid:sc:US:09696fca-7253-4e69-bfa6-6acedaa5ef90"><img src=trends.png width=600 /></a>
+<a href="https://acrobat.adobe.com/id/urn:aaid:sc:US:09696fca-7253-4e69-bfa6-6acedaa5ef90"><img src=trends.png width=600 /><br/>Unsheltered homeless on Oahu have doubled over the past twelve years.</a>
