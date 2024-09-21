@@ -7,7 +7,7 @@
 
 The First Message is: Greetings, this is the Oahu emergency housing locator. How may I help you?
 
-The System Prompt is in [system-prompt.txt](system-prompt.txt) which uses several a one- and two-shot examples.
+The System Prompt is in [system-prompt.txt](system-prompt.txt) which uses several a one- and two-shot examples. Note it includes the [Oahu Partners In Care vacancy grid text](https://www.partnersincareoahu.org/vacancy-grid-2024) updated daily, appended to the prompt instead of as a RAG document like the [Oahu Homeless Help Card](https://drive.google.com/file/d/1ThtgjkUWro2yLxYI_fguvgwv72V9WAwq) and the [resources database](https://docs.google.com/spreadsheets/d/1v7HYklUT1O1tZAChWH2JJnwNxsc4jOZZXlwSXlGO6uk)
 
 Max Tokens: 200
 
