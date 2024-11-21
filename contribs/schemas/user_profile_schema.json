@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "userId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "numPeople": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "hasPets": {
+        "type": "boolean"
+      },
+      "gender": {
+        "type": "string",
+        "enum": ["Male", "Female", "Non-Binary", "Prefer not to say"]
+      },
+      "specialNeeds": {
+        "type": "string",
+        "maxLength": 500,
+        "description": "Any additional special requirements, e.g., accessibility needs."
+      },
+      "location": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          }
+        },
+        "required": ["latitude", "longitude"]
+      }
+    },
+    "required": ["userId", "numPeople", "location"]
+  }
+

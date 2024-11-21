@@ -1,0 +1,275 @@
+openapi: 3.0.3
+info:
+  title: PonoConnect API
+  description: API for managing shelter requests, reservations, and advocacy actions in the PonoConnect ecosystem.
+  version: "1.0.0"
+  contact:
+    name: PonoConnect Support
+    email: support@ponoconnect.org
+    url: https://www.ponoconnect.org
+
+servers:
+  - url: https://api.ponoconnect.org/v1
+    description: Production server
+
+security:
+  - OAuth2: [read, write]
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.ponoconnect.org/oauth/authorize
+          tokenUrl: https://auth.ponoconnect.org/oauth/token
+          scopes:
+            read: Read access to shelter data
+            write: Write access to shelter data
+
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the user
+        numPeople:
+          type: integer
+          description: Number of people needing shelter
+        hasPets:
+          type: boolean
+          description: Does the user have pets?
+        gender:
+          type: string
+          enum: [Male, Female, Non-Binary, Prefer not to say]
+          description: Gender of the user
+        specialNeeds:
+          type: string
+          description: Special requirements (e.g., wheelchair access)
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: float
+              description: Latitude of the user’s location
+            longitude:
+              type: number
+              format: float
+              description: Longitude of the user’s location
+
+    ShelterReservation:
+      type: object
+      properties:
+        reservationId:
+          type: string
+          description: Unique reservation identifier
+        userId:
+          type: string
+          description: The ID of the user making the reservation
+        shelterId:
+          type: string
+          description: The ID of the shelter
+        reservationDate:
+          type: string
+          format: date-time
+          description: The date and time the reservation was made
+        unitType:
+          type: string
+          enum: [Studio, One-Bedroom, Family Units]
+          description: Type of unit reserved
+        startDate:
+          type: string
+          format: date-time
+          description: The start date of the reservation
+        endDate:
+          type: string
+          format: date-time
+          description: The end date of the reservation
+        confirmationStatus:
+          type: string
+          enum: [Pending, Confirmed, Cancelled]
+          description: The status of the reservation
+
+    ShelterAvailability:
+      type: object
+      properties:
+        shelterId:
+          type: string
+          description: Unique shelter identifier
+        agency:
+          type: string
+          description: Agency providing the shelter
+        vacancies:
+          type: array
+          items:
+            type: object
+            properties:
+              unitType:
+                type: string
+                enum: [Studio, One-Bedroom, Family Units]
+                description: Unit type
+              available:
+                type: integer
+                description: Number of available units
+              eligibility:
+                type: string
+                description: Eligibility criteria for the shelter
+
+    AdvocacyAction:
+      type: object
+      properties:
+        advocateId:
+          type: string
+          description: Unique identifier for the advocate
+        goal:
+          type: string
+          description: The goal of the advocacy (e.g., advocate for more Housing First shelters)
+        actionsTaken:
+          type: array
+          items:
+            type: string
+          description: List of actions taken by the advocate
+        status:
+          type: string
+          description: Current status of the advocacy (e.g., in-progress, completed)
+
+paths:
+  /users/{userId}:
+    get:
+      summary: Retrieve user profile
+      description: Get the profile details of a specific user.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '404':
+          description: User not found
+
+  /users:
+    post:
+      summary: Create a new user profile
+      description: Creates a new user profile with shelter and special needs information.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      responses:
+        '201':
+          description: User profile successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Invalid input
+
+  /reservations/{reservationId}:
+    get:
+      summary: Retrieve reservation details
+      description: Get details of a specific reservation by reservationId.
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reservation details successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShelterReservation'
+        '404':
+          description: Reservation not found
+
+  /reservations:
+    post:
+      summary: Create a new shelter reservation
+      description: Create a reservation for a shelter unit based on user profile and availability.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShelterReservation'
+      responses:
+        '201':
+          description: Reservation successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShelterReservation'
+        '400':
+          description: Invalid input
+
+  /shelters/availability:
+    get:
+      summary: Get shelter availability
+      description: Get a list of shelters with available units.
+      responses:
+        '200':
+          description: List of available shelters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShelterAvailability'
+        '500':
+          description: Server error
+
+  /advocacy/actions:
+    post:
+      summary: Create an advocacy action record
+      description: Track an advocacy action taken by a user in the community.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdvocacyAction'
+      responses:
+        '201':
+          description: Advocacy action successfully recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvocacyAction'
+        '400':
+          description: Invalid input
+
+  /notifications:
+    post:
+      summary: Send notification about shelter availability
+      description: Send a notification to users when a shelter becomes available.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: User to notify
+                message:
+                  type: string
+                  description: Notification message
+      responses:
+        '200':
+          description: Notification successfully sent
+        '400':
+          description: Invalid input
+        '500':
+          description: Server error
+

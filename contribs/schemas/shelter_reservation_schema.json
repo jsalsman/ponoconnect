@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "reservationId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "userId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "shelterId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "reservationDate": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "unitType": {
+        "type": "string",
+        "enum": ["Studio", "One-Bedroom", "Two-Bedroom", "Family Units"]
+      },
+      "startDate": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "endDate": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "confirmationStatus": {
+        "type": "string",
+        "enum": ["Pending", "Confirmed", "Cancelled"]
+      }
+    },
+    "required": ["reservationId", "userId", "shelterId", "reservationDate", "unitType", "startDate", "endDate"]
+  }
+  
