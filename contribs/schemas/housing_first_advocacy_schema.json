@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "advocateId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "goal": {
+        "type": "string",
+        "enum": ["Find Shelter for Others", "Advocate for More Housing First Shelters"]
+      },
+      "actionsTaken": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "localChallenges": {
+        "type": "string",
+        "maxLength": 500
+      },
+      "advocacyGroup": {
+        "type": "string",
+        "maxLength": 200
+      },
+      "contactLocalRepresentatives": {
+        "type": "boolean"
+      },
+      "petitionOrganized": {
+        "type": "boolean"
+      }
+    },
+    "required": ["advocateId", "goal"]
+  }
+  
